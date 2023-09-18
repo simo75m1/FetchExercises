@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap/dist/css/bootstrap.min.css">
+</head>
+<body>
+    <div style="margin: 20px 0 0 20px;">
+        <input id="get-user-input" type="text" style="border-radius: 10px 10px 10px 10px;">
+        <button id="get-user-btn" style="border-radius: 10px 10px 10px 10px;">Get User</button>
+        <button id="get-all-user-btn" style="border-radius: 10px 10px 10px 10px;">Get All</button>
+    </div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th><th>Phone</th>
+            </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+    </table>
+</body>
+<script>
+
+let url = "https://jsonplaceholder.typicode.com/users/"
+const fetchData = function(url){
+    fetch(url)
+    .then(res => res.json()) //for this exercise, just do this
+    .then(data => {
+     // Inside this callback, AND ONLY HERE the response data is available
+     console.log("data",data);
+     const tableData = createTable(data);
+     document.querySelector("#tbody").innerHTML = tableData;
+    /* data now contains the response, converted to JavaScript
+       Observe the output from the log-output above
+       Now, just build your DOM changes using the data inside this block*/       
+  })
+}
+fetchData(url);
+
+const createTable = function(data){
+    let tableData;
+    if(data instanceof Array){
+        tableData = data.map(user => `<tr><td>${user.name}</td><td>${user.phone}</td></tr>`).join("");
+    } else {
+        tableData = `<tr><td>${data.name}</td><td>${data.phone}</td></tr>`
+    }
+    return tableData;
+}
+
+document.querySelector("#get-user-btn").onclick = (event) => {
+    event.preventDefault();
+    const userId = document.querySelector("#get-user-input").value;
+    url = "https://jsonplaceholder.typicode.com/users/" + userId;
+    fetchData(url);
+}
+document.querySelector("#get-all-user-btn").onclick = (event) => {
+    event.preventDefault();
+    document.querySelector("#get-user-input").value = "";
+    url = "https://jsonplaceholder.typicode.com/users/";
+    fetchData(url);
+}
+
+  </script>
+</html>
